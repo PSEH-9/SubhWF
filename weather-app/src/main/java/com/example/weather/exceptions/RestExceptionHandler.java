@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -23,6 +24,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
         @ExceptionHandler(InvalidMediaTypeException.class)
         private ResponseEntity<ErrorModel> handleEntityNotFound(InvalidMediaTypeException ex){
             ErrorModel error = new ErrorModel(HttpStatus.NOT_FOUND, "invalid Media Type", ex.getMessage());
+
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(HttpClientErrorException.class)
+        private ResponseEntity<ErrorModel> handleNotFoundEntityNotFound(HttpClientErrorException ex){
+            ErrorModel error = new ErrorModel(HttpStatus.NOT_FOUND, "invalid Country Not present", ex.getMessage());
 
             return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
